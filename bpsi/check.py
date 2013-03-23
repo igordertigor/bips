@@ -1,6 +1,15 @@
 #!/usr/bin/env python
 
-__doc__ = """Model checking routines"""
+__doc__ = """Model checking routines
+
+Even though a model may result in converging markov chains and even though the
+posterior may be reasonably narrow, a model may be a bad description of the
+data. Model checking is about this question. This module implements some model
+checking routines that I find useful when fitting psychometric functions.
+
+These model checking routines have been tested in great detail in Fruend,
+Haenel, Wichmann (2011), JOV. Please (i) use them and (ii) cite the paper.
+"""
 
 import numpy as np
 import pymc
@@ -67,9 +76,6 @@ def influential ( full_model ):
     :Parameters:
         *model*
             the model to be evaluated
-
-    :Note:
-        Details can be found in Fruend, Haenel, Wichmann (2011), JOV.
     """
     # Store model internals
     x  = full_model.stimulus_intensities
