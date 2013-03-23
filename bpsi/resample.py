@@ -9,10 +9,7 @@ def posterior_trace ( model1, model2=None ):
     if model2 is None:
         model2 = model1
     db1 = model1.db
-    db2 = model2.db
     n_samples1 = db1.trace ( 'deviance' ).length()
-    n_samples2 = db2.trace ( 'deviance' ).length()
-    assert n_samples1==n_samples2
     assert len(model1.stochastics)==len(model2.stochastics)
 
     logp = np.empty ( n_samples1, 'd' )
