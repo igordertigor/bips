@@ -67,6 +67,9 @@ def influential ( full_model ):
     :Parameters:
         *model*
             the model to be evaluated
+
+    :Note:
+        Details can be found in Fruend, Haenel, Wichmann (2011), JOV.
     """
     # Store model internals
     x  = full_model.stimulus_intensities
