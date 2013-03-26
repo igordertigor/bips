@@ -67,3 +67,28 @@ def evaluate_single_sample ( x, model, j ):
             th[prm] = getattr(model,prm)
     return th['gm'] + (1-th['gm']-th['lm'])*model.F(x,th['al'],th['bt'])
 
+def evaluate_models ( x, *models, **kwargs ):
+    """Evaluate the model posterior
+
+    :Parameters:
+        *x*
+            x values at which to evaluate the posterior
+        *models*
+            for one model, we simply evaluate its posterior, for more than a
+            single model, we evaluate the posterior p(theta,M|data)
+
+    :Optional Keyword Arguments:
+        *nsamples*
+            number of samples
+    """
+    p = model_posteriors ( *models )[0]
+    nsamples = kwargs.setdefault ( 'nsamples', 500 )
+
+    y = np.zeros ( (nsamples,len(x)), 'd' )
+
+    for i in xrange ( nsamples ):
+        k = np.where(np.random.multinomial ( 1, p, size=1 ))[0]
+        M = models[k]
+        j = np.random.randint ( M.db.trace('deviance').length() )
+        y[i,:] = evaluate_single_sample ( x, M, j )
+    return y
