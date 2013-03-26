@@ -54,10 +54,10 @@ def make_pmf ( stimulus_intensities, response_counts, ntrials, **kwargs ):
     y = response_counts.astype('d')/ntrials
     i = np.arange ( len(response_counts), dtype='d' )
 
-    al = kwargs.setdefault ( 'al', pymc.Normal ( 'alpha', stimulus_intensities.mean(), .0001 ) )
-    bt = kwargs.setdefault ( 'bt', pymc.Normal ( 'beta',  .5*(d.min()+d.max()), .0001 ) )
-    gm = kwargs.setdefault ( 'gm', pymc.Beta (   'gamma', 2, 20 ) )
-    lm = kwargs.setdefault ( 'lm', pymc.Beta (   'lambda',2, 20 ) )
+    al = kwargs.setdefault ( 'al', pymc.Normal ( 'al', stimulus_intensities.mean(), .0001 ) )
+    bt = kwargs.setdefault ( 'bt', pymc.Normal ( 'bt',  .5*(d.min()+d.max()), .0001 ) )
+    gm = kwargs.setdefault ( 'gm', pymc.Beta (   'gm', 2, 20 ) )
+    lm = kwargs.setdefault ( 'lm', pymc.Beta (   'lm',2, 20 ) )
     F  = kwargs.setdefault ( 'F',  logistic )
     posterior_args = {'al':al,'bt':bt,'gm':gm,'lm':lm}
 
