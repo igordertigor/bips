@@ -3,6 +3,7 @@
 __doc__ = """resampling methods for model averaging an similar things"""
 
 import numpy as np
+import pymc
 
 def posterior_trace ( model1, model2=None ):
     """Evaluate the posterior probability of model2 for all samples of model1"""
@@ -57,4 +58,12 @@ def model_posteriors ( *models ):
 
     return np.linalg.solve ( A, p ),T
 
+def evaluate_single_sample ( x, model, j ):
+    th = {}
+    for prm in ['al','bt','lm','gm']:
+        if isinstance ( getattr(model,prm), pymc.Stochastic ):
+            th[prm] = model.db.trace ( prm )[j]
+        else:
+            th[prm] = getattr(model,prm)
+    return th['gm'] + (1-th['gm']-th['lm'])*model.F(x,th['al'],th['bt'])
 
