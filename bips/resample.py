@@ -4,6 +4,7 @@ __doc__ = """resampling methods for model averaging an similar things"""
 
 import numpy as np
 import pymc
+import model
 
 def posterior_trace ( model1, model2=None ):
     """Evaluate the posterior probability of model2 for all samples of model1"""
@@ -92,3 +93,23 @@ def evaluate_models ( x, *models, **kwargs ):
         j = np.random.randint ( M.db.trace('deviance').length() )
         y[i,:] = evaluate_single_sample ( x, M, j )
     return y
+def get_thres ( p, model, j ):
+    """Determine the p-threshold for a certain sample"""
+    th = get_prm ( model, j )
+    iF = eval('model.i'+th['F'].func_name)
+    q = p-th['gm']
+    q /= 1-th['gm']-th['lm']
+    if q >= 1:
+        return np.inf
+    else:
+        return iF(q)
+
+def get_prm ( model, j ):
+    """Get parameters of a certain sample"""
+    th = {'F': model.F}
+    for prm in ['al','bt','lm','gm']:
+        if isinstance ( getattr(model,prm), pymc.Stochastic ):
+            th[prm] = model.db.trace ( prm )[j]
+        else:
+            th[prm] = getattr(model,prm)
+    return th
