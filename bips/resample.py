@@ -87,6 +87,45 @@ def evaluate_models ( x, *models, **kwargs ):
         j = np.random.randint ( M.db.trace('deviance').length() )
         y[i,:] = evaluate_single_sample ( x, M, j )
     return y
+
+def sample_weber_fraction ( base, increment, p=0.75, **kwargs ):
+    """Determine the weber fraction from base to increment
+
+    Weber fractions are defined as (th_increment-th_base)/th_base.
+
+    :Parameters:
+        *base*
+            a model or a sequence of models at the base condition
+        *increment*
+            a model or a sequence of models at the incremented
+            condition
+        *p*
+            the level at which to determine the threshold
+
+    :Optional Keyword Arguments:
+        *nsamples*
+            number of samples used (default: 500)
+        *p_base,p_increment*
+            posterior probabilities of the models (will be determined using
+            model_posteriors() by default)
+    """
+    p_base   = kwargs.setdefault ( 'p_base', model_posteriors ( *base )[0] )
+    p_incr   = kwargs.setdefault ( 'p_increment', model_posteriors ( *increment )[0] )
+    nsamples = kwargs.setdefault ( 'nsamples', 500 )
+
+    y = np.zeros ( nsamples, 'd' )
+    for i in xrange ( nsamples ):
+        k_base = np.where(np.random.multinomial ( 1, p_base, size=1 ) )[0]
+        k_incr = np.where(np.random.multinomial ( 1, p_incr, size=1 ) )[0]
+        M_base = base[k_base]
+        M_incr = increment[k_base]
+        j_base = np.random.randint ( M_base.db.trace('deviance').length() )
+        j_incr = np.random.randint ( M_incr.db.trace('deviance').length() )
+        th_base = get_thres ( p, M_base, j_base )
+        th_incr = get_thres ( p, M_incr, j_incr )
+        y[i] = (th_incr-th_base)/th_base
+    return y
+
 def evaluate_single_sample ( x, model, j ):
     th = get_prm ( model, j )
     return th['gm'] + (1-th['gm']-th['lm'])*th['F'](x,th['al'],th['bt'])
