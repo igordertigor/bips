@@ -59,15 +59,6 @@ def model_posteriors ( *models ):
 
     return np.linalg.solve ( A, p ),T
 
-def evaluate_single_sample ( x, model, j ):
-    th = {}
-    for prm in ['al','bt','lm','gm']:
-        if isinstance ( getattr(model,prm), pymc.Stochastic ):
-            th[prm] = model.db.trace ( prm )[j]
-        else:
-            th[prm] = getattr(model,prm)
-    return th['gm'] + (1-th['gm']-th['lm'])*model.F(x,th['al'],th['bt'])
-
 def evaluate_models ( x, *models, **kwargs ):
     """Evaluate the model posterior
 
@@ -93,6 +84,10 @@ def evaluate_models ( x, *models, **kwargs ):
         j = np.random.randint ( M.db.trace('deviance').length() )
         y[i,:] = evaluate_single_sample ( x, M, j )
     return y
+def evaluate_single_sample ( x, model, j ):
+    th = get_prm ( model, j )
+    return th['gm'] + (1-th['gm']-th['lm'])*th['F'](x,th['al'],th['bt'])
+
 def get_thres ( p, model, j ):
     """Determine the p-threshold for a certain sample"""
     th = get_prm ( model, j )
