@@ -139,7 +139,7 @@ def get_thres ( p, M, j ):
     if q >= 1:
         return np.inf
     else:
-        return iF(q)
+        return iF(q,th['al'],th['bt'])
 
 def get_prm ( model, j ):
     """Get parameters of a certain sample"""
