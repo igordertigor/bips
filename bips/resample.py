@@ -72,8 +72,11 @@ def evaluate_models ( x, *models, **kwargs ):
     :Optional Keyword Arguments:
         *nsamples*
             number of samples
-    """
-    p = model_posteriors ( *models )[0]
+         *p_models*
+            posterior probabilities of the models (will be determined using
+            model_posteriors() by default)
+   """
+    p        = kwargs.setdefault ( 'p_models', model_posteriors ( *models )[0] )
     nsamples = kwargs.setdefault ( 'nsamples', 500 )
 
     y = np.zeros ( (nsamples,len(x)), 'd' )
