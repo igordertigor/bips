@@ -130,9 +130,9 @@ def evaluate_single_sample ( x, model, j ):
     th = get_prm ( model, j )
     return th['gm'] + (1-th['gm']-th['lm'])*th['F'](x,th['al'],th['bt'])
 
-def get_thres ( p, model, j ):
+def get_thres ( p, M, j ):
     """Determine the p-threshold for a certain sample"""
-    th = get_prm ( model, j )
+    th = get_prm ( M, j )
     iF = eval('model.i'+th['F'].func_name)
     q = p-th['gm']
     q /= 1-th['gm']-th['lm']
