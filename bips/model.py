@@ -15,13 +15,25 @@ def logistic ( x, al, bt ):
     """Logistic function sigmoid"""
     return 1./(1.+np.exp(-z_logistic*(x-al)/bt))
 
+def ilogistic ( p, al, bt ):
+    """Inverse logistic function"""
+    return bt*np.log(p/(1-p))/z_logistic + al
+
 def gumbel_l ( x, al, bt ):
     """left skewed gumbel sigmoid"""
     return 1-np.exp(-np.exp(z1_gumbel*(x-al)/bt+z2_gumbel))
 
+def igumbel_l ( p, al, bt ):
+    """Inverse gumbel_l"""
+    return bt*(np.log(-np.log(1-p))-z2_gumbel)/z1_gumbel + al
+
 def gumbel_r ( x, al, bt ):
     """right skewed gumbel sigmoid"""
     return np.exp(-np.exp(-z1_gumbel*(x-al)/bt+z2_gumbel))
+
+def igumbel_r ( p, al, bt ):
+    """Inverse gumbel_r"""
+    return bt*(np.log(-np.log(p))-z2_gumbel)/z1_gumbel + al
 
 # Generating the model
 def make_pmf ( stimulus_intensities, response_counts, ntrials, **kwargs ):
