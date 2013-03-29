@@ -61,6 +61,9 @@ def make_pmf ( stimulus_intensities, response_counts, ntrials, **kwargs ):
             specify the sigmoidal function that relates stimulus and response
             probabilities. Default: logistic
     """
+    stimulus_intensities = np.array(stimulus_intensities)
+    response_counts = np.array(response_counts)
+    ntrials = np.array(ntrials)
     d = (np.triu(stimulus_intensities.reshape((1,-1))
         -stimulus_intensities.reshape((-1,1))).ravel())
     y = response_counts.astype('d')/ntrials
