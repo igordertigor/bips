@@ -5,6 +5,8 @@ __doc__ = """resampling methods for model averaging an similar things"""
 import numpy as np
 import pymc
 import model
+from  scipy.stats import norm
+sq2 = np.sqrt(2.)
 
 def posterior_trace ( model1, model2=None ):
     """Evaluate the posterior probability of model2 for all samples of model1"""
@@ -75,7 +77,7 @@ def evaluate_models ( x, *models, **kwargs ):
          *p_models*
             posterior probabilities of the models (will be determined using
             model_posteriors() by default)
-   """
+    """
     p        = kwargs.setdefault ( 'p_models', model_posteriors ( *models )[0] )
     nsamples = kwargs.setdefault ( 'nsamples', 500 )
 
@@ -125,6 +127,39 @@ def sample_weber_fraction ( base, increment, p=0.75, **kwargs ):
         th_incr = get_thres ( p, M_incr, j_incr )
         y[i] = (th_incr-th_base)/th_base
     return y
+
+def sample_efficiency ( x, ideal_performance, models, **kwargs ):
+    """Determine efficiency
+
+    :Parameters:
+        *x*
+            stimulus values at which to determine efficiency
+        *ideal_performance*
+            performance of an ideal observer at stimulus levels given by x
+        *models*
+            fitted psychometric function models or samples from the models
+            evaluated at x
+    """
+    dprime_ideal = dprime ( ideal_performance )
+    nsamples = kwargs.setdefault ( 'nsamples', 500 )
+
+    if hasattr(models,'shape'):
+        assert models.shape[1]==len(x)
+        nsamples = models.shape[0]
+        dprime_human = dprime ( models )
+    else:
+        p_models = kwargs.setdefault ( 'p_models', model_posteriors (*models)[0] )
+        dprime_human = dprime (
+                evaluate_models(*models,p_models=p_models,nsamples=nsamples) )
+
+    efficiency = dprime_human/dprime_ideal
+    efficiency **= 2
+
+    return efficiency
+
+def dprime ( p ):
+    """Convert 2afc performance p to d'"""
+    return sq2*norm.ppf ( np.clip(p,1e-8,1-1e-8) )
 
 def evaluate_single_sample ( x, model, j ):
     th = get_prm ( model, j )
