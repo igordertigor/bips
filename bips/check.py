@@ -116,8 +116,8 @@ def influential ( full_model ):
 
 # Helper functions
 def klogp ( k, p ):
-    return np.where ( k==0, 0, k*np.log(p) )
+    return k*np.log(np.where(k==0,1,p))
 
 def klog1p ( k, p ):
-    return np.where ( k==0, 0, k*np.log1p(-p) )
+    return k*np.log1p(np.where(k==0,0,-p))
 
