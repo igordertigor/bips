@@ -42,7 +42,7 @@ def l ( nu, psi, k, n ):
     k = np.array(k,'d')
     n = np.array(n,'d')
     p = k/n
-    return (np.log(gamma(nu*n+2))).sum()-(np.log(gamma(psi*nu*n+1))).sum()-(np.log(gamma((1-psi)*nu*n+1))).sum() \ 
+    return (np.log(gamma(nu*n+2))).sum()-(np.log(gamma(psi*nu*n+1))).sum()-(np.log(gamma((1-psi)*nu*n+1))).sum() \
             + (psi*nu*n*np.log(p)).sum() + ((1-psi)*nu*n*np.log(1-p)).sum()
 
 def dl ( nu, psi, k, n ):
