@@ -107,8 +107,8 @@ def estimate_nu ( model ):
     psi = resample.evaluate_models ( model.stimulus_intensities, model )
     k = model.response_counts.astype('d')
     n = model.ntrials.astype('d')
-    k = N.where ( k==n, k-.01, k )
-    k = N.where ( k==0, .01, k )
+    k = np.where ( k==n, k-.01, k )
+    k = np.where ( k==0, .01, k )
 
     nu = 1.
     nu_i = [nu]
