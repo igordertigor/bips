@@ -90,6 +90,36 @@ def evaluate_models ( x, *models, **kwargs ):
         y[i,:] = evaluate_single_sample ( x, M, j )
     return y
 
+def evaluate_thres ( p, *models, **kwargs ):
+    """Evaluate posterior threshold distribution
+
+    :Parameters:
+        *p*
+            performance to be associated with the threshold
+        *models*
+            for one model, we simply evaluate its posterior, for more than a
+            single model, we evaluate the posterior p(theta,M|data)
+
+    :Optional Keyword Arguments:
+        *nsamples*
+            number of samples
+        *p_models*
+            posterior probabilities of the models (will be determined using
+            model_posteriors() by default)
+    """
+    p        = kwargs.setdefault ( 'p_models', model_posteriors ( *models )[0] )
+    nsamples = kwargs.setdefault ( 'nsamples', 500 )
+
+    th = np.zeros ( (nsamples,), 'd' )
+
+    for i in xrange ( nsamples ):
+        k = np.where(np.random.multinomial ( 1, p, size=1 ))[0]
+        M = models[k]
+        j = np.random.randint ( M.db.trace('deviance').length() )
+        th[i] = get_thres ( p, M, j )
+
+    return th
+
 def sample_weber_fraction ( base, increment, p=0.75, **kwargs ):
     """Determine the weber fraction from base to increment
 
