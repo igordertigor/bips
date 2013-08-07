@@ -90,11 +90,11 @@ def evaluate_models ( x, *models, **kwargs ):
         y[i,:] = evaluate_single_sample ( x, M, j )
     return y
 
-def evaluate_thres ( p, *models, **kwargs ):
+def evaluate_thres ( th_p, *models, **kwargs ):
     """Evaluate posterior threshold distribution
 
     :Parameters:
-        *p*
+        *th_p*
             performance to be associated with the threshold
         *models*
             for one model, we simply evaluate its posterior, for more than a
@@ -116,7 +116,7 @@ def evaluate_thres ( p, *models, **kwargs ):
         k = np.where(np.random.multinomial ( 1, p, size=1 ))[0]
         M = models[k]
         j = np.random.randint ( M.db.trace('deviance').length() )
-        th[i] = get_thres ( p, M, j )
+        th[i] = get_thres ( th_p, M, j )
 
     return th
 
