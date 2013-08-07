@@ -51,5 +51,6 @@ for thresholds, weber fractions, observer efficiency, ...
 import model
 import check
 import resample
+import nonstationary
 
 from model import make_pmf
